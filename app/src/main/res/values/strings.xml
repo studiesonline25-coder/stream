@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">StreamLite</string>
+    <string name="rtmp_url">rtmp://server/live/stream</string>
+    <string name="prefer_software">Prefer software decoder</string>
+    <string name="play">Play</string>
+    <string name="stop">Stop</string>
+    <string name="idle">Idle</string>
+</resources>
