@@ -38,18 +38,43 @@ Push this repo to GitHub, then open:
 Actions -> Android APK -> Run workflow
 ```
 
-The workflow builds the unsigned release APK, checks that it is below 15 MB, and
-uploads it as an artifact named:
+The workflow builds the release APK, signs it when signing secrets are configured,
+checks that it is below 15 MB, and uploads it as an artifact named:
 
 ```text
 streamlite-release-apk
 ```
 
-The APK inside the artifact is:
+The APK inside the artifact is signed when secrets are present. Without secrets, the
+artifact is still produced as an unsigned CI build:
 
 ```text
 app-release-unsigned.apk
 ```
+
+## Official Release Signing
+
+Android release signing is handled by Gradle when these GitHub repository secrets
+exist:
+
+```text
+ANDROID_SIGNING_KEY_BASE64
+ANDROID_SIGNING_STORE_PASSWORD
+ANDROID_SIGNING_KEY_ALIAS
+ANDROID_SIGNING_KEY_PASSWORD
+```
+
+Create a keystore with Android Studio or `keytool`, then base64 encode the keystore
+file and store that text in `ANDROID_SIGNING_KEY_BASE64`.
+
+On Windows PowerShell:
+
+```powershell
+[Convert]::ToBase64String([IO.File]::ReadAllBytes("release.keystore")) | Set-Clipboard
+```
+
+If the secrets are present, GitHub Actions uploads a signed release APK. If they are
+missing, it still uploads an unsigned APK so CI can keep checking the build and size.
 
 ## Size Notes
 

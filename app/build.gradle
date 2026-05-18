@@ -6,6 +6,12 @@ android {
     namespace "com.streamlite.player"
     compileSdk 35
 
+    def releaseStoreFile = System.getenv("SIGNING_STORE_FILE")
+    def releaseStorePassword = System.getenv("SIGNING_STORE_PASSWORD")
+    def releaseKeyAlias = System.getenv("SIGNING_KEY_ALIAS")
+    def releaseKeyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+    def hasReleaseSigning = releaseStoreFile && releaseStorePassword && releaseKeyAlias && releaseKeyPassword
+
     defaultConfig {
         applicationId "com.streamlite.player"
         minSdk 23
@@ -19,6 +25,17 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
 
+    signingConfigs {
+        release {
+            if (hasReleaseSigning) {
+                storeFile file(releaseStoreFile)
+                storePassword releaseStorePassword
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword
+            }
+        }
+    }
+
     buildTypes {
         debug {
             minifyEnabled false
@@ -26,6 +43,9 @@ android {
         release {
             minifyEnabled true
             shrinkResources true
+            if (hasReleaseSigning) {
+                signingConfig signingConfigs.release
+            }
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
     }
